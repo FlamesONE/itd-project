@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <link rel="preload" href="/fonts/manrope-variable.woff2" as="font" type="font/woff2" crossorigin>
+    <title>итд</title>
+    <style>
+      /* Initial loader styles - will be removed when React loads */
+      .initial-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #101214;
+        z-index: 9999;
+        transition: opacity 0.3s ease-out;
+      }
+      .initial-loader.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .initial-loader-logo {
+        display: inline-flex;
+        align-items: flex-start;
+        gap: -3px;
+        margin-bottom: 2rem;
+        font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+        user-select: none;
+      }
+      .initial-loader-logo span {
+        font-size: 3.5rem;
+        font-weight: 600;
+        line-height: 1;
+        color: #e8ebee;
+      }
+      .initial-loader-logo span:nth-child(1) {
+        margin-top: 0;
+      }
+      .initial-loader-logo span:nth-child(2) {
+        margin-top: 8px;
+      }
+      .initial-loader-logo span:nth-child(3) {
+        margin-top: 16px;
+      }
+      .initial-loader-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #2a2f36;
+        border-top-color: #1d9bf0;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      /* Support light theme */
+      html:not(.dark) .initial-loader {
+        background: #f4f6f8;
+      }
+      html:not(.dark) .initial-loader-logo span {
+        color: #111317;
+      }
+      html:not(.dark) .initial-loader-spinner {
+        border-color: #e3e7ec;
+        border-top-color: #1d9bf0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Initial loader shown while React is loading -->
+    <div id="initial-loader" class="initial-loader">
+      <div class="initial-loader-logo">
+        <span>и</span><span>т</span><span>д</span>
+      </div>
+      <div class="initial-loader-spinner"></div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

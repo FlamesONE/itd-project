@@ -1,0 +1,116 @@
+services:
+  frontend-builder:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.build
+      args:
+        - VITE_API_URL=${API_URL:-}
+    volumes:
+      - frontend_dist:/output
+    networks:
+      - itd_internal
+
+  backend:
+    build: ./backend
+    container_name: itd_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      SSE_PORT: 4001
+      UPLOAD_PORT: 4002
+      HEALTH_PORT: 4003
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@itd_postgres:5432/${DB_NAME}
+      REDIS_URL: redis://itd_redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      BCRYPT_ROUNDS: ${BCRYPT_ROUNDS:-12}
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
+    volumes:
+      - itd_uploads:/app/uploads
+    networks:
+      - itd_internal
+      - kamal
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4003/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    labels:
+      - "traefik.enable=false"
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: itd_caddy
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile.prod:/etc/caddy/Caddyfile:ro
+      - frontend_dist:/srv:ro
+      - itd_caddy_data:/data
+      - itd_caddy_config:/config
+    depends_on:
+      frontend-builder:
+        condition: service_completed_successfully
+      backend:
+        condition: service_healthy
+    networks:
+      - itd_internal
+      - kamal
+    healthcheck:
+      test: ["CMD", "caddy", "version"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: itd_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - itd_postgres_data:/var/lib/postgresql/data
+    networks:
+      - itd_internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: itd_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - itd_redis_data:/data
+    networks:
+      - itd_internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  itd_postgres_data:
+  itd_redis_data:
+  itd_uploads:
+  frontend_dist:
+  itd_caddy_data:
+  itd_caddy_config:
+
+networks:
+  itd_internal:
+    name: itd_internal
+  kamal:
+    external: true

@@ -1,0 +1,57 @@
+:80 {
+	# API proxy - must be before file_server
+	handle /graphql* {
+		reverse_proxy itd_backend:4000
+	}
+
+	handle /api/* {
+		reverse_proxy itd_backend:4000
+	}
+
+	# SSE events
+	handle /events* {
+		reverse_proxy itd_backend:4001 {
+			flush_interval -1
+		}
+	}
+
+	# Uploads
+	handle /uploads/* {
+		reverse_proxy itd_backend:4002
+	}
+
+	handle /upload* {
+		reverse_proxy itd_backend:4002
+	}
+
+	# Health check
+	handle /health {
+		respond "OK" 200
+	}
+
+	# Static frontend (fallback)
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	# Security headers
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# Compress
+	encode gzip zstd
+
+	# Cache static assets
+	@static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2
+	header @static Cache-Control "public, max-age=31536000, immutable"
+
+	# No cache for HTML
+	@html path *.html /
+	header @html Cache-Control "no-cache, no-store, must-revalidate"
+}

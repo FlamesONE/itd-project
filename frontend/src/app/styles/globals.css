@@ -1,0 +1,276 @@
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/fonts/manrope-variable.woff2') format('woff2');
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: theme('colors.light.bg');
+    --surface: theme('colors.light.surface');
+    --surface-hover: theme('colors.light.surface-hover');
+    --border: theme('colors.light.border');
+    --text: theme('colors.light.text');
+    --muted: theme('colors.light.muted');
+    --muted-hover: theme('colors.light.muted-hover');
+    --input-bg: theme('colors.light.input-bg');
+    --nav-bg: #e8ebef;
+    --nav-active: #111317;
+    --nav-active-text: #ffffff;
+    --nav-text: #6b7280;
+    --nav-text-hover: #111317;
+  }
+
+  .dark {
+    --bg: theme('colors.dark.bg');
+    --surface: theme('colors.dark.surface');
+    --surface-hover: theme('colors.dark.surface-hover');
+    --border: theme('colors.dark.border');
+    --text: theme('colors.dark.text');
+    --muted: theme('colors.dark.muted');
+    --muted-hover: theme('colors.dark.muted-hover');
+    --input-bg: theme('colors.dark.input-bg');
+    --nav-bg: #1a1d21;
+    --nav-active: #ffffff;
+    --nav-active-text: #1a1d21;
+    --nav-text: #6b7280;
+    --nav-text-hover: #ffffff;
+  }
+
+  html {
+    @apply font-sans;
+    background-color: var(--bg);
+    color: var(--text);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply min-h-screen antialiased;
+    background-color: var(--bg);
+    letter-spacing: -0.01em;
+  }
+
+  /* Refined typography */
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  /* Theme-aware utilities */
+  .bg-theme {
+    background-color: var(--bg);
+  }
+
+  .bg-surface {
+    background-color: var(--surface);
+  }
+
+  .bg-surface-hover {
+    background-color: var(--surface-hover);
+  }
+
+  .bg-border {
+    background-color: var(--border);
+  }
+
+  .border-theme {
+    border-color: var(--border);
+  }
+
+  .text-theme {
+    color: var(--text);
+  }
+
+  .text-muted {
+    color: var(--muted);
+  }
+
+  .text-theme-inverse {
+    color: var(--bg);
+  }
+
+  .bg-theme-inverse {
+    background-color: var(--text);
+  }
+
+  /* Divide color fix */
+  .divide-theme > :not([hidden]) ~ :not([hidden]) {
+    border-color: var(--border);
+  }
+
+  /* Buttons - refined and elegant */
+  .btn {
+    @apply inline-flex items-center justify-center font-semibold rounded-full;
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-primary text-white px-5 py-2.5;
+  }
+
+  .btn-primary:hover {
+    @apply bg-brand-primary-hover;
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active {
+    @apply bg-brand-primary-active;
+    transform: translateY(0) scale(0.98);
+  }
+
+  .btn-primary:disabled {
+    @apply opacity-50 cursor-not-allowed;
+    transform: none;
+  }
+
+  .btn-outline {
+    @apply btn px-5 py-2.5 border;
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--surface-hover);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .btn-danger {
+    @apply btn bg-brand-danger text-white px-5 py-2.5;
+  }
+
+  .btn-danger:hover {
+    @apply bg-brand-danger-hover;
+    transform: translateY(-1px);
+  }
+
+  /* Cards - clean and minimal */
+  .card {
+    @apply rounded-2xl border;
+    background-color: var(--surface);
+    border-color: var(--border);
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Inputs - refined */
+  .input {
+    @apply w-full rounded-xl px-5 py-3 border;
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary;
+    background-color: var(--input-bg);
+    border-color: var(--border);
+    color: var(--text);
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .input::placeholder {
+    color: var(--muted);
+  }
+
+  .input:hover:not(:focus) {
+    border-color: var(--muted);
+  }
+
+  /* Links */
+  .link {
+    @apply text-brand-primary cursor-pointer;
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .link:hover {
+    @apply underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Dividers */
+  .divider {
+    @apply border-t;
+    border-color: var(--border);
+  }
+
+  /* Hover effects - subtle */
+  .hover-highlight {
+    transition: background-color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hover-highlight:hover {
+    background-color: var(--surface-hover);
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: rgba(29, 155, 240, 0.2);
+    color: inherit;
+  }
+
+  /* Scrollbar styling - minimal */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--muted);
+  }
+
+  /* Focus visible - minimal */
+  *:focus-visible {
+    @apply outline-none;
+  }
+
+  /* Remove all focus rings */
+  .card,
+  .card:focus,
+  .card:focus-within,
+  .card:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  textarea,
+  textarea:focus,
+  textarea:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove button focus rings */
+  button:focus,
+  button:focus-visible {
+    outline: none !important;
+  }
+
+  /* Skeleton shimmer animation */
+  @keyframes skeleton-shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .skeleton-shimmer {
+    animation: skeleton-shimmer 1.5s infinite;
+  }
+}

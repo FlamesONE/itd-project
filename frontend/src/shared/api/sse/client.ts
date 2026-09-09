@@ -57,10 +57,12 @@ class SSEClient {
     });
 
     this.eventSource.onerror = (error) => {
-      console.error('[SSE] Error:', error);
-      console.log('[SSE] ReadyState:', this.eventSource?.readyState);
       this.callbacks.onError?.(error);
-      this.handleReconnect();
+      // ponytail: при CONNECTING EventSource переподключается сам. Свой reconnect поверх него
+      // открывал вторую сессию, а сервер держит одну на юзера и рвал предыдущую — цикл без конца.
+      if (this.eventSource?.readyState === EventSource.CLOSED) {
+        this.handleReconnect();
+      }
     };
   }
 

@@ -1,15 +1,15 @@
-import { useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MainLayout } from '@widgets/layouts/MainLayout';
 import { AuthLayout } from '@widgets/layouts/AuthLayout';
 import { FeedPage } from '@pages/feed';
-import { ExplorePage } from '@pages/explore';
-import { NotificationsPage } from '@pages/notifications';
-import { ProfilePage } from '@pages/profile';
-import { PostDetailPage } from '@pages/post-detail';
+const ExplorePage = lazy(() => import('@pages/explore').then(m => ({ default: m.ExplorePage })));
+const NotificationsPage = lazy(() => import('@pages/notifications').then(m => ({ default: m.NotificationsPage })));
+const ProfilePage = lazy(() => import('@pages/profile').then(m => ({ default: m.ProfilePage })));
+const PostDetailPage = lazy(() => import('@pages/post-detail').then(m => ({ default: m.PostDetailPage })));
 import { LoginPage, RegisterPage } from '@pages/auth';
-import { AdminPage } from '@pages/admin';
+const AdminPage = lazy(() => import('@pages/admin').then(m => ({ default: m.AdminPage })));
 import { useAuth } from '@app/providers/AuthProvider';
 import { useSettings } from '@features/settings';
 
@@ -74,6 +74,7 @@ function SettingsRedirect() {
 
 export function AppRouter() {
   return (
+    <Suspense fallback={<LoadingSpinner />}>
     <Routes>
       
       <Route
@@ -118,5 +119,6 @@ export function AppRouter() {
       
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </Suspense>
   );
 }

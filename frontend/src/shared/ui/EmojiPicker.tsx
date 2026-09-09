@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { Suspense, lazy, useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import EmojiPickerReact, { Theme, EmojiStyle, Categories } from 'emoji-picker-react';
+const EmojiPickerReact = lazy(() => import('emoji-picker-react'));
 import clsx from 'clsx';
 
 interface EmojiPickerProps {
@@ -59,10 +59,11 @@ export function EmojiPicker({ value, onChange, className }: EmojiPickerProps) {
             className="absolute z-[310] mt-3 left-1/2 -translate-x-1/2"
           >
             <div className="rounded-2xl overflow-hidden shadow-xl border border-theme">
+              <Suspense fallback={<div className="w-[340px] h-[420px] bg-surface" />}>
               <EmojiPickerReact
                 onEmojiClick={handleEmojiSelect}
-                theme={Theme.DARK}
-                emojiStyle={EmojiStyle.NATIVE}
+                theme={'dark' as never}
+                emojiStyle={'native' as never}
                 searchPlaceholder="Поиск эмодзи..."
                 width={340}
                 height={420}
@@ -70,17 +71,18 @@ export function EmojiPicker({ value, onChange, className }: EmojiPickerProps) {
                 skinTonesDisabled
                 lazyLoadEmojis
                 categories={[
-                  { category: Categories.SUGGESTED, name: 'Часто используемые' },
-                  { category: Categories.SMILEYS_PEOPLE, name: 'Смайлы и люди' },
-                  { category: Categories.ANIMALS_NATURE, name: 'Животные и природа' },
-                  { category: Categories.FOOD_DRINK, name: 'Еда и напитки' },
-                  { category: Categories.TRAVEL_PLACES, name: 'Путешествия' },
-                  { category: Categories.ACTIVITIES, name: 'Активности' },
-                  { category: Categories.OBJECTS, name: 'Объекты' },
-                  { category: Categories.SYMBOLS, name: 'Символы' },
-                  { category: Categories.FLAGS, name: 'Флаги' },
+                  { category: 'suggested' as never, name: 'Часто используемые' },
+                  { category: 'smileys_people' as never, name: 'Смайлы и люди' },
+                  { category: 'animals_nature' as never, name: 'Животные и природа' },
+                  { category: 'food_drink' as never, name: 'Еда и напитки' },
+                  { category: 'travel_places' as never, name: 'Путешествия' },
+                  { category: 'activities' as never, name: 'Активности' },
+                  { category: 'objects' as never, name: 'Объекты' },
+                  { category: 'symbols' as never, name: 'Символы' },
+                  { category: 'flags' as never, name: 'Флаги' },
                 ]}
               />
+              </Suspense>
             </div>
           </motion.div>
         )}

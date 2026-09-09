@@ -49,7 +49,7 @@ export class GetFeed {
           authorVerified: author.verified,
           content: post.content.value,
           likesCount,
-          commentsCount: 0,
+          commentsCount: post.commentsCount ?? 0,
           repostsCount,
           viewsCount: post.viewsCount ?? 0,
           isPinned: post.isPinned ?? false,

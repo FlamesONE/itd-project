@@ -4,8 +4,8 @@ ALTER TABLE posts ADD COLUMN IF NOT EXISTS engagement_score FLOAT DEFAULT 0;
 CREATE INDEX IF NOT EXISTS idx_posts_engagement ON posts(engagement_score DESC, created_at DESC)
     WHERE is_deleted = FALSE;
 
-CREATE INDEX IF NOT EXISTS idx_posts_recent_engagement ON posts(engagement_score DESC, created_at DESC)
-    WHERE is_deleted = FALSE AND created_at > NOW() - INTERVAL '7 days';
+-- ponytail: частичный индекс с NOW() Postgres не принимает (предикат обязан быть IMMUTABLE);
+-- idx_posts_engagement выше покрывает тот же порядок сортировки.
 
 CREATE TABLE IF NOT EXISTS feed_cache (
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,

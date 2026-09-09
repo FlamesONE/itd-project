@@ -27,7 +27,7 @@ export class CaptchaValidator implements ICaptchaValidator {
     }
 
     try {
-      const response = await fetch("https:
+      const response = await fetch("https://api.hcaptcha.com/siteverify", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
